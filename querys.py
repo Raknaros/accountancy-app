@@ -30,6 +30,18 @@ usuarios = pd.read_sql("SELECT * FROM priv.users", warehouse)
 
 buzon_sunat = pd.read_sql("SELECT * FROM priv.buzon_sunat", warehouse)
 
+
+def pdt621():
+    result = None
+    while result is None:
+        try:
+            query = "SELECT * FROM acc._9"
+            result = pd.read_sql(query, warehouse)
+        except Exception as e:
+            pass
+    return result
+
+
 """
 def cargar_datos():
     # Función para cargar datos de la base de datos
