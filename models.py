@@ -9,6 +9,7 @@ class Pdt621(Base):
     __tablename__ = '_9'
     __table_args__ = {'schema': 'acc'}
 
+
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     ruc = Column(BigInteger, nullable=True)
     subdiario = Column(Integer, nullable=True)

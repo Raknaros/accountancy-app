@@ -3,7 +3,8 @@ from time import sleep
 import streamlit as st
 import json
 
-from querys import entidades, usuarios, buzon_sunat, pdt621
+from models import Pdt621
+from querys import entidades, usuarios, buzon_sunat, pdt621, Session
 
 st.set_page_config(page_title="Home", page_icon=":material/edit:", layout="wide")
 
@@ -63,7 +64,7 @@ if st.session_state.get("authentication_status"):
     with tab2:
         st.data_editor(st.session_state.pdt621, key='edit_pdt621', height=300, hide_index=True, num_rows='dynamic',
                        column_order=['ruc', 'periodo_tributario', 'numero_orden', 'fecha_presentacion',
-                                     '_101', '_107', '_301', '_145'],
+                                     '_100', '_107', '_301', '_145'],
                        column_config={
                            "ruc": st.column_config.NumberColumn(
                                label="RUC",
@@ -81,7 +82,7 @@ if st.session_state.get("authentication_status"):
                                label="Fecha de presentacion",
                                format='DD/MM/YYYY'
                            ),
-                           "_101": st.column_config.NumberColumn(
+                           "_100": st.column_config.NumberColumn(
                                label="Ventas",
                                format='%d',
                            ),
@@ -110,11 +111,48 @@ if st.session_state.get("authentication_status"):
     def update_db():
         df = st.session_state.pdt621
         cambios = st.session_state["edit_pdt621"]
-        #df.get_loc(0)
-        #if cambios.get("edited_rows") is
-        return st.write(cambios.get("added_rows"))
+        edited_rows = cambios.get('edited_rows')
+        added_rows = cambios.get('added_rows')
+        deleted_rows = cambios.get('deleted_rows')
+
+        if bool(edited_rows):
+            session = Session()
+
+            for i in edited_rows.keys():  # indice de fila con valores modificados
+                fila = session.query(Pdt621).filter(Pdt621.id == int(df.iloc[int(i)].id)).first()
+                elemento = edited_rows.get(i)
+                for a in elemento.keys():
+                    setattr(fila, a, elemento.get(a))
+                session.add(fila)
+                session.commit()
+            session.close()
+
+
+        if len(added_rows) > 0:
+            pass
+        if len(deleted_rows) > 0:
+            pass
+
+        return st.write(cambios)
         #st.session_state.pdt621 = pdt621()
 
+        """
+        
+        for i in edited_rows.keys(): #indice de fila con valores modificados
+            elemento = ejemplo.get('edited_rows').get(i)
+            for a in elemento.keys():#diccionario de columna modificada y valor
+                print(a) #columna
+                #print(elemento.get(a)) #valor
+
+        for i in added_rows: #i es cada fila anadida
+            print(i)
+            for a in i.keys():
+                print(a) #columna
+                print(i.get(a)) #valor
+
+        for i in deleted_rows:
+            print(i)
+        """
 
     st.button('Actualizar', type="primary", on_click=update_db)
 
