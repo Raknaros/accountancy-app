@@ -117,42 +117,42 @@ if st.session_state.get("authentication_status"):
 
         if bool(edited_rows):
             session = Session()
-
-            for i in edited_rows.keys():  # indice de fila con valores modificados
-                fila = session.query(Pdt621).filter(Pdt621.id == int(df.iloc[int(i)].id)).first()
-                elemento = edited_rows.get(i)
-                for a in elemento.keys():
-                    setattr(fila, a, elemento.get(a))
-                session.add(fila)
-                session.commit()
-            session.close()
-
+            try:
+                for i in edited_rows.keys():  # indice de fila con valores modificados
+                    fila = session.query(Pdt621).filter(Pdt621.id == int(df.iloc[int(i)].id)).first()
+                    elemento = edited_rows.get(i)
+                    for a in elemento.keys():
+                        setattr(fila, a, elemento.get(a))
+                    session.add(fila)
+                    session.commit()
+            except Exception as e:
+                session.rollback()
+            finally:
+                session.close()
 
         if len(added_rows) > 0:
-            pass
+            session = Session()
+            try:
+                for i, nuevo_dato in enumerate(added_rows):
+                    # Crear una nueva instancia de Pdt621 con los datos de la nueva fila
+                    nueva_fila = Pdt621(**nuevo_dato)
+                    session.add(nueva_fila)
+                session.commit()
+            except Exception as e:
+                session.rollback()
+            finally:
+                session.close()
         if len(deleted_rows) > 0:
-            pass
+            session = Session()
+            for i in deleted_rows:
+                #sid_valor = df.iloc[int(i)].id
+                fila = session.query(Pdt621).filter(Pdt621.id == int(df.iloc[int(i)].id)).first()
+                if fila:
+                    session.delete(fila)
 
-        return st.write(cambios)
-        #st.session_state.pdt621 = pdt621()
 
-        """
-        
-        for i in edited_rows.keys(): #indice de fila con valores modificados
-            elemento = ejemplo.get('edited_rows').get(i)
-            for a in elemento.keys():#diccionario de columna modificada y valor
-                print(a) #columna
-                #print(elemento.get(a)) #valor
+                    #st.session_state.pdt621 = pdt621()
 
-        for i in added_rows: #i es cada fila anadida
-            print(i)
-            for a in i.keys():
-                print(a) #columna
-                print(i.get(a)) #valor
-
-        for i in deleted_rows:
-            print(i)
-        """
 
     st.button('Actualizar', type="primary", on_click=update_db)
 
