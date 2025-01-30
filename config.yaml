@@ -10,7 +10,7 @@ credentials:
       first_name: Rak
       last_name: Smith
       logged_in: False # Will be managed automatically
-      password: Giu12FF8DB* # Will be hashed automatically
+      password: G72656770 # Will be hashed automatically
       roles: # Optional
       - admin
       - editor

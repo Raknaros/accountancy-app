@@ -3,17 +3,22 @@ from time import sleep
 import streamlit as st
 import json
 
+from streamlit_navigation_bar import st_navbar
+
 from models import Pdt621
 from querys import entidades, usuarios, buzon_sunat, pdt621, Session
 
-st.set_page_config(page_title="Home", page_icon=":material/edit:", layout="wide")
+#st.set_page_config(page_title="Home", page_icon=":material/edit:", layout="wide")
+page = st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
+st.write(page)
 
+#st.session_state.sidebar()
 if 'datos' not in st.session_state:
     st.session_state.pdt621 = pdt621()
 
 if st.session_state.get("authentication_status"):
-    st.session_state.sidebar()
-    st.session_state['authenticator'].logout(location='sidebar', button_name='Cerrar Sesion')
+
+    #st.session_state['authenticator'].logout(location='sidebar', button_name='Cerrar Sesion')
     st.title('Bienvenido')
     tab1, tab2, tab3 = st.tabs(["Entidades", "Usuarios", "Buzon Sunat"])
     with tab1:
@@ -106,8 +111,6 @@ if st.session_state.get("authentication_status"):
                                    'leido', ])
 
 
-
-
     def update_db():
         df = st.session_state.pdt621
         cambios = st.session_state["edit_pdt621"]
@@ -149,7 +152,6 @@ if st.session_state.get("authentication_status"):
                 fila = session.query(Pdt621).filter(Pdt621.id == int(df.iloc[int(i)].id)).first()
                 if fila:
                     session.delete(fila)
-
 
                     #st.session_state.pdt621 = pdt621()
 
