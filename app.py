@@ -1,11 +1,8 @@
 import streamlit_authenticator as stauth
 import streamlit as st
 import yaml
-from streamlit_navigation_bar import st_navbar
 from yaml.loader import SafeLoader
-from time import sleep
 
-#from services.Querys import adquirientes, proveedores, catalogo
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -24,19 +21,22 @@ try:
 except Exception as e:
     st.error(e)
 
+#inicializar_datos()
 
-def other_navbar():
-    st_navbar(["Home", "Resumen"])
-    #st.sidebar.page_link('pages/2_cargar_pedidos.py', label='Pedidos')
-    #st.sidebar.page_link('pages/3_cargar_cotizaciones.py', label='Cotizaciones')
-    #st.sidebar.page_link('pages/4_cargar_bancarizaciones.py', label='Bancarizaciones', disabled=True)
+def other_sidebar():
+    pg = st.navigation([st.Page("pages/0_home.py", title="Home"), st.Page("pages/1_dashboard.py", title="Dashboard")])
+    pg.run()
+    #st.sidebar.header(st.session_state["name"])
+    #st.sidebar.page_link('pages/0_home.py', label='Home')
+    #st.sidebar.page_link('pages/1_dashboard.py', label='Dashboard')
 
 
-def gerencia_navbar():
-    st_navbar(["Home", "Resumen"])
-    #st.sidebar.page_link('pages/2_cargar_pedidos.py', label='Pedidos')
-    #st.sidebar.page_link('pages/3_cargar_cotizaciones.py', label='Cotizaciones')
-    #st.sidebar.page_link('pages/4_cargar_bancarizaciones.py', label='Bancarizaciones', disabled=True)
+def gerencia_sidebar():
+    pg = st.navigation([st.Page("pages/0_home.py", title="Home"), st.Page("pages/1_dashboard.py", title="Dashboard")])
+    pg.run()
+    #st.sidebar.header(st.session_state["name"])
+    #st.sidebar.page_link('pages/0_home.py', label='Home')
+    #st.sidebar.page_link('pages/1_dashboard.py', label='Dashboard')
 
 
 if 'authenticator' not in st.session_state:
@@ -45,11 +45,13 @@ if 'authenticator' not in st.session_state:
 if st.session_state['authentication_status']:
     user_roles = config['credentials']['usernames'][st.session_state["username"]].get('roles', [])
     if 'admin' in user_roles:
-        if 'navbar' not in st.session_state:
-            st.session_state.sidebar = gerencia_navbar
+        if 'gerencia_sidebar' not in st.session_state:
+            st.session_state.sidebar = gerencia_sidebar
     else:
-        if 'navbar' not in st.session_state:
-            st.session_state.sidebar = other_navbar
+        if 'other_sidebar' not in st.session_state:
+            st.session_state.sidebar = other_sidebar
+
+    #actualizar_datos()
     st.switch_page("pages/0_home.py")
 elif st.session_state['authentication_status'] is False:
     st.error('Username/password is incorrect')
