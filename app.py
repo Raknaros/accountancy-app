@@ -2,14 +2,20 @@ import streamlit_authenticator as stauth
 import streamlit as st
 import yaml
 from yaml.loader import SafeLoader
-from time import sleep
-
-#from services.Querys import adquirientes, proveedores, catalogo
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 st.set_page_config(page_title="Login", page_icon=":material/edit:", layout="wide")
+
+hide_streamlit_menu = """
+    <style>
+        #MainMenu {visibility: hidden;} /* Oculta el menú de Streamlit */
+        footer {visibility: hidden;} /* Oculta el footer "Made with Streamlit" */
+        header {visibility: hidden;} /* Opcional: Oculta la barra de encabezado completa */
+    </style>
+"""
+st.html(hide_streamlit_menu)
 
 authenticator = stauth.Authenticate(
     config['credentials'],
@@ -24,21 +30,12 @@ except Exception as e:
     st.error(e)
 
 
-def other_sidebar():
-    st.sidebar.header(st.session_state["name"])
-    st.sidebar.page_link('pages/0_home.py', label='Home')
-    #st.sidebar.page_link('pages/2_cargar_pedidos.py', label='Pedidos')
-    #st.sidebar.page_link('pages/3_cargar_cotizaciones.py', label='Cotizaciones')
-    #st.sidebar.page_link('pages/4_cargar_bancarizaciones.py', label='Bancarizaciones', disabled=True)
+def mostrar_navbar():
 
+    with open("added/navbar.html", "r") as html_file:
+        navbar_html = html_file.read()
 
-def gerencia_sidebar():
-    st.sidebar.header(st.session_state["name"])
-    st.sidebar.page_link('pages/0_home.py', label='Home')
-    st.sidebar.page_link('pages/1_dashboard.py', label='Dashboard', disabled=True)
-    #st.sidebar.page_link('pages/2_cargar_pedidos.py', label='Pedidos')
-    #st.sidebar.page_link('pages/3_cargar_cotizaciones.py', label='Cotizaciones')
-    #st.sidebar.page_link('pages/4_cargar_bancarizaciones.py', label='Bancarizaciones', disabled=True)
+    st.html(navbar_html)
 
 
 if 'authenticator' not in st.session_state:
@@ -46,17 +43,16 @@ if 'authenticator' not in st.session_state:
 
 if st.session_state['authentication_status']:
     user_roles = config['credentials']['usernames'][st.session_state["username"]].get('roles', [])
+
     if 'admin' in user_roles:
-        if 'pages/gerencia_sidebar' not in st.session_state:
+        if 'gerencia_navbar' not in st.session_state:
             pass
-            #pg = st.navigation([st.Page("pages/0_home.py", title="Home"), st.Page("pages/1_dashboard.py", title="Dashboard"), st.Page("pages/2_informacion.py", title="Informacion")])
-            #pg.run()
-            #st.session_state.sidebar = gerencia_sidebar
+            st.session_state['navbar'] = mostrar_navbar
     else:
-        if 'other_sidebar' not in st.session_state:
+        if 'other_navbar' not in st.session_state:
             pass
-            #st.session_state.sidebar = other_sidebar
-    st.switch_page("pages/0_home.py")
+            st.session_state['navbar'] = mostrar_navbar
+    st.switch_page("pages/1_dashboard.py")
 elif st.session_state['authentication_status'] is False:
     st.error('Username/password is incorrect')
 elif st.session_state['authentication_status'] is None:
