@@ -23,69 +23,86 @@ warehouse = create_engine(warehouse_url, connect_args={"connect_timeout": 10})
 
 Session = sessionmaker(bind=warehouse)
 
-entidades = pd.read_sql("SELECT * FROM priv.entities",
-                        warehouse)
-
-usuarios = pd.read_sql("SELECT * FROM priv.users", warehouse)
-
-buzon_sunat = pd.read_sql("SELECT * FROM priv.buzon_sunat", warehouse)
-
-
-def pdt621():
+def ejecutar_consulta(query, conexion, parse_dates=None):
     result = None
     while result is None:
         try:
-            query = "SELECT * FROM acc._9"
-            result = pd.read_sql(query, warehouse)
+            result = pd.read_sql(query, con=conexion, parse_dates=parse_dates)
         except Exception as e:
-            pass
+            st.warning(f"Error en la consulta: {e}. Reintentando...")
     return result
 
 
-"""
-def cargar_datos():
-    # Función para cargar datos de la base de datos
-    query = "SELECT id, cod_pedido, fecha_pedido, periodo, (CASE customers.alias WHEN null THEN adquiriente ELSE customers.alias END) AS adquiriente, importe_total, rubro, promedio_factura, contado_credito, bancariza, notas, estado, punto_entrega FROM pedidos AS a JOIN customers ON customers.ruc=a.adquiriente ORDER BY id"
-    #REVISAR CONSULTA POR INDICES DUPLICADOS, O HACER RESET_INDEX(DROP=TRUE)
-    return pd.read_sql(query, salessystem)
+# Consultas específicas
+def pdt621():
+    query = "SELECT * FROM acc._9"
+    return ejecutar_consulta(query, salessystem)
+
+def ventas():
+    query = "SELECT * FROM acc._9"
+    return ejecutar_consulta(query, salessystem)
+
+def compras():
+    query = "SELECT * FROM acc._9"
+    return ejecutar_consulta(query, salessystem)
+
+def pagos_sunat():
+    query = "SELECT * FROM acc._9"
+    return ejecutar_consulta(query, salessystem)
+
+def entidades():
+    query = "SELECT * FROM priv.entities"
+    return ejecutar_consulta(query, salessystem)
+
+def usuarios():
+    query = "SELECT * FROM priv.users"
+    return ejecutar_consulta(query, salessystem)
+
+def buzon_sunat():
+    query = "SELECT * FROM priv.buzon_sunat"
+    return ejecutar_consulta(query, salessystem)
+
+def ficha_ruc():
+    query = "SELECT * FROM acc._9"
+    return ejecutar_consulta(query, salessystem)
+
+def ide():
+    query = "SELECT * FROM acc._9"
+    return ejecutar_consulta(query, salessystem)
+
+def tra():
+    query = "SELECT * FROM acc._9"
+    return ejecutar_consulta(query, salessystem)
 
 
-cotizaciones = pd.read_sql("SELECT * FROM facturas WHERE estado NOT IN ('TERMINADO', 'ENTREGADO', 'ANULADA')",
-                           salessystem)
+def inicializar_datos():
+    if 'bancarizaciones' not in st.session_state:
+        st.session_state.bancarizaciones = bancarizaciones()
+    if 'adquirientes' not in st.session_state:
+        st.session_state.adquirientes = adquirientes()
+    if 'proveedores' not in st.session_state:
+        st.session_state.proveedores = proveedores()
+    if 'catalogo' not in st.session_state:
+        st.session_state.catalogo = catalogo()
+    if 'pre_detalle' not in st.session_state:
+        st.session_state.pre_detalle = pre_detalle()
+    if 'lista_facturas' not in st.session_state:
+        st.session_state.lista_facturas = lista_facturas()
+    if 'lista_guias' not in st.session_state:
+        st.session_state.lista_guias = lista_guias()
+    if 'pedidos' not in st.session_state:
+        st.session_state.pedidos = pedidos()
+    if 'cotizaciones' not in st.session_state:
+        st.session_state.cotizaciones = cotizaciones()
 
-cotizaciones_poremitir = cotizaciones[~cotizaciones['estado'].isin(['TERMINADO', 'ENTREGADO', 'ANULADO'])]
 
-facturas_poremitir = (cotizaciones_poremitir.groupby(['cod_pedido', 'cuo'])
-                      .agg({
-    'alias': 'first',
-    'emision': 'first',
-    'ruc': 'first',
-    'nombre_razon': 'first',
-    'moneda': 'first',
-    'precio_unit': lambda x: (x * cotizaciones_poremitir.loc[x.index, 'cantidad']).sum() * 1.18,
-    'forma_pago': 'first',
-    'observaciones': 'first',
-    'detraccion': 'first',
-    'retencion': 'first',
-    'estado': 'first'
-}).reset_index())
-
-# Renombramos la columna de precio_unit para que tenga el nombre correcto si es necesario
-facturas_poremitir.rename(columns={'precio_unit': 'total'}, inplace=True)
-
-# Ordenamos por 'cod_pedido' y 'cuo'
-facturas_poremitir.sort_values(by=['cod_pedido', 'cuo'], inplace=True)
-
-bancarizaciones = pd.read_sql("SELECT * FROM v_bcp WHERE estado NOT IN ('TERMINADO', 'ENTREGADO', 'ANULADA')",
-                              salessystem)
-
-adquirientes = pd.read_sql("SELECT * FROM customers", salessystem)
-
-proveedores = pd.read_sql("SELECT * FROM proveedores", salessystem)
-
-catalogo = pd.read_sql("SELECT * FROM catalogo", salessystem)
-
-#vehiculos = pd.read_sql("SELECT * FROM vehiculos", salessystem)
-
-pre_detalle = pd.read_sql('SELECT * FROM pre_detalle ORDER BY fecha_emision', warehouse)
-"""
+def actualizar_datos():
+    st.session_state.bancarizaciones = bancarizaciones()
+    st.session_state.adquirientes = adquirientes()
+    st.session_state.proveedores = proveedores()
+    st.session_state.catalogo = catalogo()
+    st.session_state.pre_detalle = pre_detalle()
+    st.session_state.lista_facturas = lista_facturas()
+    st.session_state.lista_guias = lista_guias()
+    st.session_state.pedidos = pedidos()
+    st.session_state.cotizaciones = cotizaciones()

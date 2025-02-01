@@ -47,12 +47,12 @@ if st.session_state['authentication_status']:
     if 'admin' in user_roles:
         if 'gerencia_navbar' not in st.session_state:
             pass
-            st.session_state['navbar'] = mostrar_navbar
+            #st.session_state['navbar'] = mostrar_navbar
     else:
         if 'other_navbar' not in st.session_state:
             pass
-            st.session_state['navbar'] = mostrar_navbar
-    st.switch_page("pages/1_dashboard.py")
+            #st.session_state['navbar'] = mostrar_navbar
+    st.switch_page("pages/0_home.py")
 elif st.session_state['authentication_status'] is False:
     st.error('Username/password is incorrect')
 elif st.session_state['authentication_status'] is None:
