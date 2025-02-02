@@ -36,73 +36,76 @@ def ejecutar_consulta(query, conexion, parse_dates=None):
 # Consultas específicas
 def pdt621():
     query = "SELECT * FROM acc._9"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def ventas():
     query = "SELECT * FROM acc._9"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def compras():
     query = "SELECT * FROM acc._9"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def pagos_sunat():
     query = "SELECT * FROM acc._9"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def entidades():
     query = "SELECT * FROM priv.entities"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def usuarios():
     query = "SELECT * FROM priv.users"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def buzon_sunat():
     query = "SELECT * FROM priv.buzon_sunat"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def ficha_ruc():
     query = "SELECT * FROM acc._9"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def ide():
     query = "SELECT * FROM acc._9"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 def tra():
     query = "SELECT * FROM acc._9"
-    return ejecutar_consulta(query, salessystem)
+    return ejecutar_consulta(query, warehouse)
 
 
 def inicializar_datos():
-    if 'bancarizaciones' not in st.session_state:
-        st.session_state.bancarizaciones = bancarizaciones()
-    if 'adquirientes' not in st.session_state:
-        st.session_state.adquirientes = adquirientes()
-    if 'proveedores' not in st.session_state:
-        st.session_state.proveedores = proveedores()
-    if 'catalogo' not in st.session_state:
-        st.session_state.catalogo = catalogo()
-    if 'pre_detalle' not in st.session_state:
-        st.session_state.pre_detalle = pre_detalle()
-    if 'lista_facturas' not in st.session_state:
-        st.session_state.lista_facturas = lista_facturas()
-    if 'lista_guias' not in st.session_state:
-        st.session_state.lista_guias = lista_guias()
-    if 'pedidos' not in st.session_state:
-        st.session_state.pedidos = pedidos()
-    if 'cotizaciones' not in st.session_state:
-        st.session_state.cotizaciones = cotizaciones()
+    if 'pdt621' not in st.session_state:
+        st.session_state.pdt621 = pdt621()
+    if 'ventas' not in st.session_state:
+        st.session_state.ventas = ventas()
+    if 'compras' not in st.session_state:
+        st.session_state.compras = compras()
+    if 'pagos_sunat' not in st.session_state:
+        st.session_state.pagos_sunat = pagos_sunat()
+    if 'entidades' not in st.session_state:
+        st.session_state.entidades = entidades()
+    if 'usuarios' not in st.session_state:
+        st.session_state.usuarios = usuarios()
+    if 'buzon_sunat' not in st.session_state:
+        st.session_state.buzon_sunat = buzon_sunat()
+    if 'ficha_ruc' not in st.session_state:
+        st.session_state.ficha_ruc = ficha_ruc()
+    if 'tregistro_ide' not in st.session_state:
+        st.session_state.tregistro_ide = ide()
+    if 'tregistro_tra' not in st.session_state:
+        st.session_state.tregistro_tra = tra()
 
 
 def actualizar_datos():
-    st.session_state.bancarizaciones = bancarizaciones()
-    st.session_state.adquirientes = adquirientes()
-    st.session_state.proveedores = proveedores()
-    st.session_state.catalogo = catalogo()
-    st.session_state.pre_detalle = pre_detalle()
-    st.session_state.lista_facturas = lista_facturas()
-    st.session_state.lista_guias = lista_guias()
-    st.session_state.pedidos = pedidos()
-    st.session_state.cotizaciones = cotizaciones()
+    st.session_state.pdt621 = pdt621()
+    st.session_state.ventas = ventas()
+    st.session_state.compras = compras()
+    st.session_state.pagos_sunat = pagos_sunat()
+    st.session_state.entidades = entidades()
+    st.session_state.usuarios = usuarios()
+    st.session_state.buzon_sunat = buzon_sunat()
+    st.session_state.ficha_ruc = ficha_ruc()
+    st.session_state.tregistro_ide = ide()
+    st.session_state.tregistro_tra = tra()
