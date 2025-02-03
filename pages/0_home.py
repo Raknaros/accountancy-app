@@ -21,9 +21,10 @@ if st.session_state.get("authentication_status"):
             pass
         else:
             entidad = st.session_state.entidades.loc[st.session_state.entidades['alias'] == alias]
-            st.write("**RUC:** " + str(entidad['ruc'].values[0]))
-            st.write("**Usuario SOL:** " + str(entidad['usuario_sol'].values[0]))
-            st.write("**Clave SOL:** " + str(entidad['clave_sol'].values[0]))
+            st.write("**Nombre o Razon Social:**\n" + str(entidad['nombre_razon'].values[0]))
+            st.write("**RUC:**\n" + str(entidad['ruc'].values[0]))
+            st.write("**Usuario SOL:\n** " + str(entidad['usuario_sol'].values[0]))
+            st.write("**Clave SOL:\n** " + str(entidad['clave_sol'].values[0]))
 
 
     with col1.container(height=800, border=False):
